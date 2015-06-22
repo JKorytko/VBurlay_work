@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Генетическая Оптимизация</title>
+	<meta charset="utf-8">
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<style type="text/css"></style>
+</head>
+
+<script type="text/javascript" src="external/jquery-1.11.3.js"></script>
+<!--script type="text/javascript" src="external/highcharts.js"></script-->
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script type="text/javascript" src="rwga.js"></script>
+<script type="text/javascript" src="vega.js"></script>
+<script type="text/javascript" src="moga.js"></script>
+<script type="text/javascript" src="npga.js"></script>
+<script type="text/javascript">
+
+var length, limit, mutate;
+
+var average1 = [], average2 = [], min1 = [], min2 = [];
+var rs1, rs2, rv1, rv2, rl1, rl2, rd1, rd2, rd01, rd02;
+
+function Optimize() {
+	
+	// считывание данных формы
+	
+	length = document.getElementById("populationSize").value;
+	limit = document.getElementById("iterationLimit").value;  
+	mutate = document.getElementById("mutationProbability").value;
+	
+	if (document.getElementById("algo1").checked == true) rwga();
+	else if (document.getElementById("algo2").checked == true) vega();
+	else if (document.getElementById("algo3").checked == true) moga();
+	else if (document.getElementById("algo4").checked == true) npga();
+	
+	$(function () {
+		$('#container').highcharts({
+			chart: {},
+			title: {
+            text: 'Значения целевых функций'
+			},
+			yAxis: {
+					title: {
+                text: 'Значение'
+				} 
+			},
+			plotOptions: {
+				series: {
+					allowPointSelect: true
+				}
+			},
+
+			series: [{
+				data: min1
+				}, {
+				data: min2
+			}]
+		});
+	});
+
+	average1 = [];
+	average2 = [];
+	min1 = [];
+	min2 = [];
+	
+	coordinate1_div.innerHTML = "<b><i>s</i></b> = "+rs1+"<b><i> v</i></b> = "+rv1+"<b><i> L</i></b> = "+rl1+"<b><i> d</i></b> = "+rd1+"<b><i> D<small>0</small></i></b> = "+rd01+"<br>";
+	if (document.getElementById("algo1").checked == true)
+	coordinate2_div.innerHTML = 'В методе RWGA одна целевая функция, составленная из двух  с присвоением случайных весов';
+	else
+	coordinate2_div.innerHTML = "<b><i>s</i></b> = "+rs2+"<b><i> v</i></b> = "+rv2+"<b><i> L</i></b> = "+rl2+"<b><i> d</i></b> = "+rd2+"<b><i> D<small>0</small></i></b> = "+rd02+"<br>";
+
+}
+
+</script>
+<body>
+<table class="main" border="1">
+<tr>
+	<td class="top" colspan="2"><h1 style="color: #437ad1;">Многокритериальная Генетическая Оптимизация</h1></td>
+</tr>
+<tr>
+	<td class="search"><b>Опции алгоритма:</b></td>
+	<td class="topmenu"><b>Результаты:</b></td>
+</tr>
+<tr>
+	<td class="news">
+	<table class="newstable" cellspacing="5">
+		<tr class="input1">
+			<div class="field">
+				<label for="populationSize">Размер популяции:</label>
+				<input type="text" name="populationSize" id="populationSize" value="100"/><br />
+			</div>
+			<div class="field">
+				<label for="iterationLimit">Максимальное число итераций:</label>
+				<input type="text" name="iterationLimit" id="iterationLimit" value="100"/><br />
+			</div>
+			<div class="field">
+				<label for="mutationProbability">Вероятность мутации:</label>
+				<input type="text" name="mutationProbability" id="mutationProbability" value="0.5"/><br />
+			</div>
+			<br/>
+		</tr>
+		<tr>
+			<label>Первая оптимизируемая функция:</label>
+			<img src="form1.png" align="center">
+		</tr>
+		<tr>
+			<label>Вторая оптимизируемая функция:</label>
+			<img src="form2.png" align="center">
+		</tr>
+		<br/>
+		<tr class="radio">
+		<div>
+			<label for="algo">Метод оптимизации:</label><br/>
+			<input type="radio" name="algo" id="algo1" value="rwga" checked="checked"> Random Weights Genetic Algorithm (RWGA)<br/>
+			<input type="radio" name="algo" id="algo2" value="vega"> Vector Evaluation Genetic Algorithm (VEGA)<br/>
+			<input type="radio" name="algo" id="algo3" value="moga"> Multiobjective Genetic Algorithm (MOGA)<br/>
+			<input type="radio" name="algo" id="algo4" value="npga"> Niched Pareto Genetic Algorithm (NPGA)<br/>
+		</div>
+		</tr>
+		<br/>
+		<br/>
+		<tr>
+		<button id="optimize" onclick="Optimize()">Оптимизировать</button>
+		</tr>
+	</table>	
+	</td>
+	<td class="text">
+		<div id="container" style="height: 470px; width: 800px;">
+		</div>
+		<table>
+			<tr>
+				<td> Значения переменных для первой функции в точке минимума:   <div style="color: #437ad1; font-size: 19px;" id="coordinate1_div">?</div> </td>
+			</tr>
+				<td> Значения переменных для второй функции в точке минимума:   <div style="color: #437ad1; font-size: 19px;" id="coordinate2_div">?</div> </td>
+			<tr>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td class="copyright">Дипломная работа, НТУ "ХПИ"</td>
+	<td class="bottommenu">Автор: Бурлай В.И. , Руководитель: Корытко Ю.Н.</td>
+</tr>
+</table>
+</body>
+</html>
